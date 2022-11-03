@@ -1,9 +1,35 @@
-p {
-	float: left;
+header.encabezamiento {
+	display: grid;
+	grid-template-columns: repeat(4, 100px);
+	grid-template-rows: 100px;
+	grid-template: "logo nav idioma aceptar";
+	gap: 3px;
+	background-color: gray;
 }
-nav {
-	float: left;
+.encabezamiento a {
+	text-decoration: double;
+	border: 1px solid black;
+	padding: 3%;
+	background-color: black;
+	color: red;
+	transition: color 0.7s;
 }
-form {
-	float: right;
+.encabezamiento a:hover {
+	color: white;
+	border-radius: 20%;
+	transition: color 0.7s;
+}
+.logo {
+	grid-area: logo;
+}
+.nav {
+	grid-area: nav;
+	vertical-align: middle;
+}
+
+.idioma {
+	grid-area: idioma;
+}
+.aceptar {
+	grid-area: aceptar;
 }

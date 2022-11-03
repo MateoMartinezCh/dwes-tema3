@@ -1,4 +1,7 @@
 <!DOCTYPE html>
+<?php
+require 'idioma.php';
+?>
 <html>
 
 <head>
@@ -10,23 +13,30 @@
 </head>
 
 <body>
-	<p>MiniMyCloud</p>
-	<nav>
-		<a href="#">Inicio</a>
-		<a href="#">Subir</a>
-		<a href="#">Ficheros</a>
-	</nav>
-	<form action="GET">
-		<select id="idioma" name="idioma">
-			<option value="es" <?php if ($idioma == 'es') {
-									echo 'selected';
-								} ?>>Español</option>
-			<option value="en" <?php if ($idioma == 'en') {
-									echo 'selected';
-								} ?>>Inglés</option>
-		</select>
-		<input type="submit" value="OK" />
-	</form>
+	<header class="encabezamiento">
+		<p class="logo">MiniMyCloud</p>
+		<nav class="nav">
+			<a href="#">Inicio</a>
+			<a href="#">Subir</a>
+			<a href="#">Ficheros</a>
+		</nav>
+		<form action="GET">
+			<select id="idioma" name="idioma" class="idioma">
+				<option value="es" <?php if ($idioma == 'es') {
+										echo 'selected';
+									} ?>>Español</option>
+				<option value="en" <?php if ($idioma == 'en') {
+										echo 'selected';
+									} ?>>Inglés</option>
+			</select>
+			<input type="submit" value="OK" class="aceptar" />
+		</form>
+	</header>
+	<main>
+		<?php
+		echo "<h1>" . getCadena('bienvenida') . "</h1>";
+		?>
+	</main>
 </body>
 
 </html>
