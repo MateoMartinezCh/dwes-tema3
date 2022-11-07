@@ -1,35 +1,32 @@
-header.encabezamiento {
-	display: grid;
-	grid-template-columns: repeat(4, 100px);
-	grid-template-rows: 100px;
-	grid-template: "logo nav idioma aceptar";
-	gap: 3px;
-	background-color: gray;
+body {
+	background-color: #76787921;
 }
-.encabezamiento a {
-	text-decoration: double;
-	border: 1px solid black;
-	padding: 3%;
-	background-color: black;
-	color: red;
-	transition: color 0.7s;
-}
-.encabezamiento a:hover {
-	color: white;
-	border-radius: 20%;
-	transition: color 0.7s;
-}
-.logo {
-	grid-area: logo;
-}
-.nav {
-	grid-area: nav;
-	vertical-align: middle;
-}
-
 .idioma {
-	grid-area: idioma;
+	padding: 4px;
+	border: 1px solid transparent;
+	border-radius: 10%;
+	border-color: transparent transparent rgba(0, 0, 0, 0.1) transparent;
+	cursor: pointer;
 }
 .aceptar {
-	grid-area: aceptar;
+	background-color: #198754;
+	color: #e6f4e6;
+	padding: 4px;
+	border-radius: 20%;
+}
+
+.pil {
+	background: 0 0;
+	border: 0;
+	border-radius: 0.375rem;
+	--bs-nav-pills-link-active-color: #fff;
+	--bs-nav-pills-link-active-bg: #198754;
+	border-radius: var(rgb(10, 12, 11) v-pills-border-radius);
+	background-color: var(--bs-nav-pills-link-active-bg);
+}
+main.inicio {
+	margin: 20%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
 }
