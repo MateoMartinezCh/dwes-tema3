@@ -6,8 +6,8 @@ function printForm(): void
 
     echo '
     <form action="#" method="POST" enctype="multipart/form-data">
-    <label for="nombre">' . getCadena('subir_nombre') . ':</label>
-    <input type="text" name="nombre" id="nombre"><br/>
+    <label for="nombre_fichero">' . getCadena('subir_nombre') . ':</label>
+    <input type="text" name="nombre_fichero" id="nombre_fichero"><br/>
     <label for="fichero_usuario">' . getCadena('subir_seleccionar') . ':</label>
     <input name="fichero_usuario" type="file"><br/>
     <input type="submit" value="' . getCadena('subir_enviar') . '">
@@ -68,27 +68,46 @@ function printForm(): void
     <main>
         <?php
         echo "<h1>" . getCadena('subir_h1') . "</h1>";
-        printForm();
-        if (
-            $_FILES && isset($_FILES['fichero_usuario']) &&
-            $_FILES['fichero_usuario']['error'] === UPLOAD_ERR_OK &&
-            $_FILES['fichero_usuario']['size'] > 0
-        ) {
-            $extension =  pathinfo($_FILES['fichero_usuario']['name'], PATHINFO_EXTENSION);
-            if ($extension == 'pdf' || $extension == 'gif' || $extension == 'png' || $extension == 'jpg') {
-                $rutaFicheroDestino = './ficheros/' . basename($_FILES['fichero_usuario']['name']);
-                $seHaSubido = move_uploaded_file($_FILES['fichero_usuario']['tmp_name'], $rutaFicheroDestino);
+        if (!$_POST) {
+            printForm();
+        } else {
+            if (isset($_POST['nombre_fichero']) && mb_strlen($_POST['nombre_fichero']) > 0) {
+                $nombresano = htmlspecialchars(trim($_POST['nombre_fichero']));
+                if (
+                    $_FILES && isset($_FILES['fichero_usuario']) &&
+                    $_FILES['fichero_usuario']['error'] === UPLOAD_ERR_OK &&
+                    $_FILES['fichero_usuario']['size'] > 0
+                ) {
 
-                if ($seHaSubido) {
-                    echo "<p> " . getCadena('subir_subidocorrectamentep1') . $_FILES['fichero_usuario']['name'] . getCadena('subir_subidocorrectamentep2') . "</p>";
+                    $permitidos = array("pdf", "gif", "png", "jpg");
+                    $extension =  pathinfo($_FILES['fichero_usuario']['name'], PATHINFO_EXTENSION);
+                    $mimesPermitidos = array("image/gif", "image/png", "image/jpeg", "application/pdf");
+                    $fichero = $_FILES['fichero_usuario']['tmp_name'];
+                    $finfo = finfo_open(FILEINFO_MIME_TYPE);
+                    $mime_fichero = finfo_file($finfo, $fichero);
+                    if (in_array($extension, $permitidos) && in_array($mime_fichero, $mimesPermitidos)) {
+                        $_FILES['fichero_usuario']['name'] = $nombresano . "." . $extension;
+                        $rutaFicheroDestino = './ficheros/' . basename($_FILES['fichero_usuario']['name']);
+                        if (!file_exists($rutaFicheroDestino)) {
+                            $seHaSubido = move_uploaded_file($_FILES['fichero_usuario']['tmp_name'], $rutaFicheroDestino);
+                            echo "<p> " . getCadena('subir_subidocorrectamentep1') . $_FILES['fichero_usuario']['name'] . getCadena('subir_subidocorrectamentep2') . "</p>";
+                            echo "<a href='subir.php?idioma=$idioma'>" . getCadena('subir_reenviar') . "</a>";
+                        } else {
+                            echo "El fichero con ese nombre ya existe en el servidor";
+                            echo "<p>No se ha subido el fichero</p>";
+                        }
+                    } else {
+                        echo "<h1>La extensión no es correcta</h1>";
+                    }
                 } else {
-                    echo "<p>No se ha subido el fichero</p>";
+                    echo "<h1>Ha habido algún error al enviar el formulario</h1>";
+                    echo "Fichero existe? -> " . isset($_FILES['fichero_usuario']) . "<br>";
+                    echo "Sin errores?" . $_FILES['fichero_usuario']['error'] . "<br>";
+                    echo "Mayor de 0?" . $_FILES['fichero_usuario']['size'];
                 }
             } else {
-                echo "<h1>La extensión no es correcta</h1>";
+                echo "<p>No hay nombre o el nombre está vacío</p>";
             }
-        } else if ($_POST) {
-            echo "<h1>Ha habido algún error</h1>";
         }
 
         ?>

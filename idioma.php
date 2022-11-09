@@ -39,6 +39,10 @@ $cadenas = [
         'es' => 'Enviar fichero ',
         'en' => 'Send file '
     ],
+    'subir_reenviar' => [
+        'es' => 'Pulse aquí para enviar otro fichero ',
+        'en' => 'Click here to send another file '
+    ],
     'subir_subidocorrectamentep1' => [
         'es' => 'El fichero ',
         'en' => 'The file '
