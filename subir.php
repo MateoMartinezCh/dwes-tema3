@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <?php
 require 'idioma.php';
-function printForm(): void
+function printForm($errornombre = "", $errorfichero = "", $recuperonombre = ""): void
 {
 
     echo '
     <form action="#" method="POST" enctype="multipart/form-data">
     <label for="nombre_fichero">' . getCadena('subir_nombre') . ':</label>
-    <input type="text" name="nombre_fichero" id="nombre_fichero"><br/>
+    <input type="text" name="nombre_fichero" id="nombre_fichero" value="' . $recuperonombre . '"><br/>' . $errornombre . '
     <label for="fichero_usuario">' . getCadena('subir_seleccionar') . ':</label>
-    <input name="fichero_usuario" type="file"><br/>
+    <input name="fichero_usuario" type="file"><br/>' . $errorfichero . '
     <input type="submit" value="' . getCadena('subir_enviar') . '">
     </form>';
 }
@@ -71,7 +71,9 @@ function printForm(): void
         if (!$_POST) {
             printForm();
         } else {
-            if (isset($_POST['nombre_fichero']) && mb_strlen($_POST['nombre_fichero']) > 0) {
+            $error = "";
+            $errorfichero = "";
+            if (isset($_POST['nombre_fichero']) && mb_strlen($_POST['nombre_fichero']) > 0 && $_POST['nombre_fichero'] != " ") {
                 $nombresano = htmlspecialchars(trim($_POST['nombre_fichero']));
                 if (
                     $_FILES && isset($_FILES['fichero_usuario']) &&
@@ -93,20 +95,23 @@ function printForm(): void
                             echo "<p> " . getCadena('subir_subidocorrectamentep1') . $_FILES['fichero_usuario']['name'] . getCadena('subir_subidocorrectamentep2') . "</p>";
                             echo "<a href='subir.php?idioma=$idioma'>" . getCadena('subir_reenviar') . "</a>";
                         } else {
-                            echo "El fichero con ese nombre ya existe en el servidor";
-                            echo "<p>No se ha subido el fichero</p>";
+                            $error = "<p><b>" . getCadena('error_yaexistenombre') . "</b></p>";
                         }
                     } else {
-                        echo "<h1>La extensión no es correcta</h1>";
+                        $errorfichero = "<p><b>" . getCadena('error_extensionincorrecta') . "</b></p>";
                     }
                 } else {
-                    echo "<h1>Ha habido algún error al enviar el formulario</h1>";
-                    echo "Fichero existe? -> " . isset($_FILES['fichero_usuario']) . "<br>";
-                    echo "Sin errores?" . $_FILES['fichero_usuario']['error'] . "<br>";
-                    echo "Mayor de 0?" . $_FILES['fichero_usuario']['size'];
+                    $errorfichero = "<p><b>" . getCadena('error_faltaarchivo') . "</b></p>";
                 }
             } else {
-                echo "<p>No hay nombre o el nombre está vacío</p>";
+                $error = "<p><b>" . getCadena('error_sinnombre') . "</b></p>";
+            }
+            if ($error != "" || $errorfichero != "") {
+                if (isset($nombresano)) {
+                    printForm($error, $errorfichero, $nombresano);
+                } else {
+                    printForm($error, $errorfichero);
+                }
             }
         }
 

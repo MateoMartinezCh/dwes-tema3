@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <?php
 require 'idioma.php';
+function is_dir_empty($dir)
+{
+    if (!is_readable($dir)) {
+        return null;
+    } else {
+        return (count(scandir($dir)) == 2);
+    }
+}
 ?>
 <html>
 
@@ -52,12 +60,16 @@ require 'idioma.php';
     </header>
     <main>
         <?php
-        $todosFicheros = scandir('./ficheros');
+        $directorio = './ficheros';
+        $todosFicheros = scandir($directorio);
         $ficherosPdf = [];
         $ficherosGif = [];
         $ficherosPng = [];
         $ficherosJpg = [];
-        if ($todosFicheros !== false) {
+        if (is_dir_empty("./ficheros")) {
+            echo "<h1>" . getCadena('cloud_vacio') . "</h1>";
+            echo "<a href='subir.php?idioma=$idioma'>" . getCadena('cloud_reenviar') . "</a>";
+        } else {
             foreach ($todosFicheros as $fic) {
                 if (pathinfo($fic, PATHINFO_EXTENSION) == 'pdf') {
                     $ficherosPdf[] = "./ficheros/$fic";
@@ -78,20 +90,37 @@ require 'idioma.php';
                     $ficherosJpg[] = "./ficheros/$fic";
                 }
             }
+            if (!empty($ficherosPdf)) {
+
+                echo "<h1>" . getCadena('cloud_pdf') . "</h1>";
+                echo "<ul>";
+                foreach ($ficherosPdf as $fic) {
+                    echo "<li><a href=" .  "./" . $fic . ">"  . pathinfo($fic, PATHINFO_BASENAME) . "</a></li>";
+                }
+                echo "</ul>";
+            } else {
+                echo "<h1>" . getCadena('cloud_nopdf') . "</h1>";
+            }
+            if (!empty($ficherosGif) || !empty($ficherosPng) || !empty($ficherosJpg)) {
+                echo "<h1>" . getCadena('cloud_images') . "</h1>";
+                /*                 echo "<div class='contenedor'>";
+ */
+                foreach ($ficherosGif as $fic) {
+                    echo "<img src=" .  "./" . $fic . "></img><br>";
+                }
+                foreach ($ficherosPng as $fic) {
+                    echo "<img src=" .  "./" . $fic . "></img><br>";
+                }
+                foreach ($ficherosJpg as $fic) {
+                    echo "<img src=" .  "./" . $fic . "></img><br>";
+                }
+                /*                 echo "</div>";
+ */
+            } else {
+                echo "<h1>" . getCadena('cloud_noimages') . "</h1>";
+            }
         }
-        echo "<h1>Aquí tienes todos los ficheros que has subido</h1>";
-        foreach ($ficherosPdf as $fic) {
-            echo "<a href=" .  "./" . $fic . " >Pulse aquí para abrir el fichero " . $fic . "</a><br>";
-        }
-        foreach ($ficherosGif as $fic) {
-            echo "<a href=" .  "./" . $fic . " >Pulse aquí para abrir el fichero " . $fic . "</a><br>";
-        }
-        foreach ($ficherosPng as $fic) {
-            echo "<a href=" .  "./" . $fic . " >Pulse aquí para abrir el fichero " . $fic . "</a><br>";
-        }
-        foreach ($ficherosJpg as $fic) {
-            echo "<a href=" .  "./" . $fic . " >Pulse aquí para abrir el fichero " . $fic . "</a><br>";
-        }
+
         ?>
     </main>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
